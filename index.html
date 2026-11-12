@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAMA ROMA - بوابة متابعة الطالب وولي الأمر</title>
+    
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = "https://uqvgfyvmnyfipbihfvia.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxdmdmeXZtbnlmaXBiaWhmdmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzODE4MTIsImV4cCI6MjEwOTk1NzgxMn0.SWo7_yjtoRxEdnybqr1bRxdCpCNFn1eRELWImRSkDTk";
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabase = supabase;
+    </script>
+
+    <!-- خط Cairo العربي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #db2777;
+            --primary-hover: #be185d;
+            --bg-color: #fdf2f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --border-color: #fbcfe8;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; scroll-behavior: smooth; }
+        .container { max-width: 850px; margin: 0 auto; }
+
+        header { 
+            background: linear-gradient(135deg, #ffffff 0%, #fce7f3 100%); 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(219, 39, 119, 0.1); 
+            margin-bottom: 24px; 
+            text-align: center; 
+            border: 2px solid var(--border-color);
+            animation: fadeInDown 0.7s ease-in-out;
+        }
+        header h1 { color: var(--primary-color); font-size: 2.2rem; font-weight: 900; margin-bottom: 5px; }
+        header p { color: #6b7280; font-size: 1.05rem; }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-box { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            border: 2px solid var(--border-color); 
+            margin-bottom: 24px; 
+            text-align: center;
+            animation: fadeInUp 0.7s ease-in-out;
+        }
+        .search-box label { display: block; font-size: 1.1rem; font-weight: 700; color: var(--primary-color); margin-bottom: 12px; }
+        .search-controls { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+        .search-controls input { flex: 1; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1.05rem; outline: none; text-align: center; font-weight: bold; }
+        .search-controls input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(219, 39, 119, 0.2); }
+        .search-controls button { width: 140px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .search-controls button:hover { background: var(--primary-hover); }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border: 2px solid var(--border-color); 
+            animation: fadeInUp 0.5s ease-in-out;
+        }
+        .card h2 { 
+            font-size: 1.35rem; 
+            margin-bottom: 18px; 
+            color: var(--primary-color); 
+            border-bottom: 2px dashed var(--border-color); 
+            padding-bottom: 10px; 
+            text-align: center;
+        }
+
+        .student-details { background: #fff1f2; padding: 20px; border-radius: 12px; border: 1px solid #fecdd3; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #f43f5e33; font-size: 1.05rem; }
+        
+        .badge-paid { background: #dcfce7; color: var(--success); padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.95rem; }
+        .badge-unpaid { background: #fee2e2; color: var(--danger); padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.95rem; }
+
+        .history-section { margin-top: 18px; }
+        .history-title { font-size: 1rem; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 8px; }
+        .history-box { font-size: 0.95rem; color: #334155; max-height: 180px; overflow-y: auto; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); line-height: 1.8; }
+
+        .btn-print { background: #4f46e5; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-print:hover { background: #4338ca; }
+
+        .error-msg { color: var(--danger); font-weight: bold; margin-top: 12px; display: none; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #printableReport, #printableReport * { visibility: visible; }
+            #printableReport { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🧬 MAMA ROMA 🔬</h1>
+        <p>✨ بوابة متابعة مستوى الطالب، الحضور، والامتحانات ✨</p>
+    </header>
+
+    <!-- مربع إدخال كود الطالب -->
+    <div class="search-box">
+        <label for="studentCodeInput">أدخل كود الطالب الخاص بك لعرض التقرير:</label>
+        <div class="search-controls">
+            <input type="text" id="studentCodeInput" placeholder="مثال: 101" onkeypress="if(event.key === 'Enter') searchStudent()">
+            <button type="button" id="searchBtn" onclick="searchStudent()">عرض البيانات</button>
+        </div>
+        <p id="errorMsg" class="error-msg"></p>
+    </div>
+
+    <!-- بطاقة عرض بيانات الطالب (للقراءة فقط) -->
+    <div class="card" id="studentReportCard" style="display: none;">
+        <h2>📊 التقرير الأكاديمي الشامل للطالب</h2>
+        
+        <div class="student-details" id="printableReport">
+            <h3 id="resName" style="margin-bottom: 15px; color: var(--primary-color); font-size: 1.4rem; text-align: center;"></h3>
+            
+            <div class="info-row"><span>كود الطالب:</span><strong id="resCode"></strong></div>
+            <div class="info-row"><span>المجموعة:</span><strong id="resGroup"></strong></div>
+            <div class="info-row"><span>حالة الاشتراك والدفع:</span><span id="resPayment"></span></div>
+            <div class="info-row"><span>نسبة الحضور:</span><strong id="resAttendance"></strong></div>
+            <div class="info-row" style="background: #fbcfe866; padding: 10px; border-radius: 8px; border: none;">
+                <span>المستوى والتقدير العام:</span>
+                <strong id="resOverallLevel" style="color: var(--primary-color); font-size: 1.1rem;"></strong>
+            </div>
+
+            <!-- سجل الحضور والغياب -->
+            <div class="history-section">
+                <span class="history-title">📅 سجل الحضور والغياب:</span>
+                <div id="resAttendanceHistory" class="history-box"></div>
+            </div>
+
+            <!-- سجل الامتحانات -->
+            <div class="history-section">
+                <span class="history-title">📝 سجل الامتحانات والدرجات:</span>
+                <div id="resExamsHistory" class="history-box"></div>
+            </div>
+        </div>
+
+        <button type="button" class="btn-print" onclick="window.print()">🖨️ طباعة التقرير</button>
+    </div>
+</div>
+
+<script>
+    window.searchStudent = async function() {
+        const code = document.getElementById("studentCodeInput").value.trim();
+        const errorMsg = document.getElementById("errorMsg");
+        const reportCard = document.getElementById("studentReportCard");
+        const searchBtn = document.getElementById("searchBtn");
+
+        errorMsg.style.display = "none";
+        
+        if (!code) {
+            errorMsg.innerText = "⚠️ يرجى إدخال كود الطالب أولاً.";
+            errorMsg.style.display = "block";
+            reportCard.style.display = "none";
+            return;
+        }
+
+        searchBtn.innerText = "جاري البحث...";
+        searchBtn.disabled = true;
+
+        const { data, error } = await window.supabase
+            .from('students')
+            .select('*')
+            .eq('code', code)
+            .single();
+
+        searchBtn.innerText = "عرض البيانات";
+        searchBtn.disabled = false;
+
+        if (error || !data) {
+            errorMsg.innerText = "❌ لم يتم العثور على طالب بهذا الكود، تأكد من الكود وحاول مرة أخرى.";
+            errorMsg.style.display = "block";
+            reportCard.style.display = "none";
+            return;
+        }
+
+        renderStudentReport(data);
+    };
+
+    function calculateOverallPerformance(attendanceList, examsList) {
+        let attendancePct = 0;
+        let examsPct = 0;
+        let hasAttendance = attendanceList && attendanceList.length > 0;
+        let hasExams = examsList && examsList.length > 0;
+
+        if (hasAttendance) {
+            const presentCount = attendanceList.filter(a => a.status === "حاضر").length;
+            attendancePct = (presentCount / attendanceList.length) * 100;
+        }
+
+        if (hasExams) {
+            const totalPercentages = examsList.reduce((sum, ex) => sum + ex.percentage, 0);
+            examsPct = totalPercentages / examsList.length;
+        }
+
+        let overallPct = 0;
+        if (hasAttendance && hasExams) {
+            overallPct = Math.round((attendancePct * 0.4) + (examsPct * 0.6));
+        } else if (hasExams) {
+            overallPct = Math.round(examsPct);
+        } else if (hasAttendance) {
+            overallPct = Math.round(attendancePct);
+        } else {
+            return "لم يتم رصد بيانات كافية بعد";
+        }
+
+        let grade = "";
+        if (overallPct >= 85) grade = "ممتاز 🌟";
+        else if (overallPct >= 75) grade = "جيد جداً 👏";
+        else if (overallPct >= 65) grade = "جيد 👍";
+        else if (overallPct >= 50) grade = "مقبول";
+        else grade = "يحتاج تحسين";
+
+        return `${grade} (${overallPct}%)`;
+    }
+
+    function renderStudentReport(student) {
+        document.getElementById("resName").innerText = student.name;
+        document.getElementById("resCode").innerText = student.code;
+        document.getElementById("resGroup").innerText = student.group_name || "غير محددة";
+
+        // حالة الدفع بتنسيق ملون
+        const paymentEl = document.getElementById("resPayment");
+        const isPaid = student.payment_status === "مدفوع";
+        paymentEl.innerHTML = isPaid 
+            ? `<span class="badge-paid">✔ مدفوع</span>` 
+            : `<span class="badge-unpaid">✖ غير مدفوع</span>`;
+
+        // نسبة وسجل الحضور
+        const attendanceList = student.attendance || [];
+        const total = attendanceList.length;
+        const present = attendanceList.filter(a => a.status === "حاضر").length;
+        const pct = total > 0 ? Math.round((present / total) * 100) + "%" : "لا يوجد سجل بعد";
+        document.getElementById("resAttendance").innerText = pct;
+
+        const historyContainer = document.getElementById("resAttendanceHistory");
+        if (attendanceList.length === 0) {
+            historyContainer.innerHTML = "لا يوجد سجل حضور أو غياب مسجل حتى الآن.";
+        } else {
+            historyContainer.innerHTML = attendanceList.map(a => 
+                `<div>• <strong>${a.date}</strong> (${a.time || ''}) — <span style="font-weight:bold; color:${a.status === 'حاضر' ? '#16a34a' : '#dc2626'}">${a.status}</span></div>`
+            ).join('');
+        }
+
+        // سجل الامتحانات
+        const examsList = student.exams_history || [];
+        const examsContainer = document.getElementById("resExamsHistory");
+        if (examsList.length === 0) {
+            examsContainer.innerHTML = "لا توجد امتحانات مسجلة حتى الآن.";
+        } else {
+            examsContainer.innerHTML = examsList.map(ex => 
+                `<div>• <strong>${ex.date}</strong>: الدرجة <span style="color:var(--primary-color); font-weight:bold;">${ex.score} / ${ex.total}</span> (${ex.percentage}%) — التقدير: <strong>${ex.grade}</strong></div>`
+            ).join('');
+        }
+
+        // المستوى العام
+        document.getElementById("resOverallLevel").innerText = calculateOverallPerformance(attendanceList, examsList);
+
+        // إظهار البطاقة والتمرير إليها
+        const card = document.getElementById("studentReportCard");
+        card.style.display = "block";
+        card.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
